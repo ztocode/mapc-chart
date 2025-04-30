@@ -42,6 +42,9 @@ export interface StackedBarChartProps {
   valueFormat?: (value: number) => string;
   roundedCorners?: boolean;
   cornerRadius?: number;
+  showMedianLine?: boolean;
+  medianLineColor?: string;
+  medianLineLabel?: string;
 }
 
 interface TooltipData {
@@ -69,6 +72,9 @@ export const StackedBarChart: React.FC<StackedBarChartProps> = ({
   valueFormat = (value) => value.toString(),
   roundedCorners = false,
   cornerRadius = 4,
+  showMedianLine = false,
+  medianLineColor,
+  medianLineLabel = 'Median',
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [tooltip, setTooltip] = useState<TooltipData>({ x: 0, y: 0, content: null });
@@ -340,6 +346,48 @@ export const StackedBarChart: React.FC<StackedBarChartProps> = ({
           .style('text-anchor', 'middle')
           .text(yAxisLabel);
       }
+
+      // Draw median line if enabled and vertical
+      if (showMedianLine && orientation === 'vertical') {
+        // Collect all values
+        const allValues = data.flatMap(d => d.values.map(v => v.value));
+        const sorted = [...allValues].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        const median = sorted.length % 2 !== 0
+          ? sorted[mid]
+          : (sorted[mid - 1] + sorted[mid]) / 2;
+        const y = yScale(median);
+
+        // Determine median line color
+        let medianColor = medianLineColor;
+        if (!medianColor) {
+          if (colors && colors.length > 0) {
+            medianColor = colors[0];
+          } else if (colorScheme && d3[colorScheme]) {
+            medianColor = d3[colorScheme][0];
+          } else {
+            medianColor = 'blue';
+          }
+        }
+
+        svg.append('line')
+          .attr('x1', margin.left)
+          .attr('x2', width - margin.right)
+          .attr('y1', y + adjustedMargin.top)
+          .attr('y2', y + adjustedMargin.top)
+          .attr('stroke', medianColor)
+          .attr('stroke-dasharray', '4,2')
+          .attr('stroke-width', 2);
+        svg.append('text')
+          .attr('x', width - margin.right - 5)
+          .attr('y', y + adjustedMargin.top - 6)
+          .attr('text-anchor', 'end')
+          .attr('alignment-baseline', 'middle')
+          .attr('fill', medianColor)
+          .attr('font-size', 12)
+          .attr('font-weight', 'bold')
+          .text(`${medianLineLabel}: ${median}`);
+      }
     } else {
       // X-axis
       g.append('g')
@@ -416,7 +464,7 @@ export const StackedBarChart: React.FC<StackedBarChartProps> = ({
       });
     }
 
-  }, [data, width, height, margin, colors, colorScheme, showLegend, showTooltip, title, orientation, xAxisLabel, yAxisLabel, barPadding, showValues, valueFormat, roundedCorners, cornerRadius]);
+  }, [data, width, height, margin, colors, colorScheme, showLegend, showTooltip, title, orientation, xAxisLabel, yAxisLabel, barPadding, showValues, valueFormat, roundedCorners, cornerRadius, showMedianLine, medianLineColor, medianLineLabel]);
 
   return (
     <div 

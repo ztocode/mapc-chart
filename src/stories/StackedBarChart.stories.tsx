@@ -50,16 +50,6 @@ export const Default: Story = {
   },
 };
 
-export const WithRoundedCorners: Story = {
-  args: {
-    ...Default.args,
-    roundedCorners: true,
-    cornerRadius: 6,
-    title: 'Stacked Bar Chart with Rounded Corners',
-    ariaLabel: 'Stacked Bar Chart with Rounded Corners',
-  },
-};
-
 export const WithValueLabels: Story = {
   args: {
     ...Default.args,
@@ -113,5 +103,16 @@ export const NoLegend: Story = {
     showLegend: false,
     title: 'Stacked Bar Chart without Legend',
     ariaLabel: 'Stacked Bar Chart without Legend',
+  },
+};
+
+export const WithMedianLine: Story = {
+  args: {
+    ...Default.args,
+    showMedianLine: true,
+    medianLineColor: 'red',
+    medianLineLabel: 'Median',
+    title: 'Stacked Bar Chart with Median Line',
+    ariaLabel: 'Stacked Bar Chart with Median Line',
   },
 }; 

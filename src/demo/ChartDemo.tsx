@@ -157,6 +157,24 @@ const multiLineChartData = [
   },
 ];
 
+const arlingtonData = [
+  { label: "25017356100", value: 2150 },
+  { label: "25017356600", value: 2500 },
+  { label: "25017356300", value: 2150 },
+  { label: "25017356400", value: 2300 },
+  { label: "25017356500", value: 2075 },
+  { label: "25017356601", value: 2200 },
+  { label: "25017356602", value: 2200 },
+  { label: "25017356701", value: 2200 },
+  { label: "25017356702", value: 2400 },
+  { label: "25017356800", value: 1700 },
+];
+
+const arlingtonStackedData = arlingtonData.map(d => ({
+  label: d.label,
+  values: [{ category: "Median Ask", value: d.value }],
+}));
+
 export const ChartDemo: React.FC = () => {
   return (
     <div style={{ padding: '20px' }}>
@@ -423,6 +441,35 @@ export const ChartDemo: React.FC = () => {
           showTooltip={true}
           xAxisLabel="Time Period"
           yAxisLabel="Value"
+        />
+      </div>
+
+      <div style={{ marginBottom: '60px' }}>
+        <h2>Arlington Median Ask by Neighborhood</h2>
+        <StackedBarChart
+          data={arlingtonStackedData}
+          width={1200}
+          height={400}
+          title="Arlington Median Ask by Neighborhood"
+          xAxisLabel="Neighborhood"
+          yAxisLabel="Median Ask"
+          showValues={true}
+        />
+      </div>
+
+      <div style={{ marginBottom: '60px' }}>
+        <h2>Arlington Median Ask by Neighborhood (with Median Line)</h2>
+        <StackedBarChart
+          data={arlingtonStackedData}
+          width={1200}
+          height={400}
+          title="Arlington Median Ask by Neighborhood (with Median Line)"
+          xAxisLabel="Neighborhood"
+          yAxisLabel="Median Ask"
+          showValues={true}
+          showMedianLine={true}
+          medianLineColor="red"
+          medianLineLabel="Median"
         />
       </div>
     </div>
